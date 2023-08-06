@@ -18,10 +18,12 @@ import { Textarea } from "../ui/textarea";
 import { usePathname, useRouter } from "next/navigation";
 import { createThread } from "@/lib/actions/thread.action";
 import { useToast } from "@/components/ui/use-toast";
+import { useOrganization } from "@clerk/nextjs";
 
 const PostThread = ({ userId }: { userId: string }) => {
   const pathname = usePathname();
   const { toast } = useToast();
+  const { organization } = useOrganization();
 
   const form = useForm<z.infer<typeof ThreadValidation>>({
     resolver: zodResolver(ThreadValidation),
@@ -39,7 +41,7 @@ const PostThread = ({ userId }: { userId: string }) => {
         author: userId,
         path: pathname,
         text: values.thread,
-        communityId: null,
+        communityId: organization ? organization.id : null,
       });
 
       window.location.href = "http://localhost:3000";
